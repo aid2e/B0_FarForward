@@ -22,6 +22,8 @@ First make sure to first install eic shell and checkout the branch
 * `cmake --build ../epic_build --target install`
 * `cd ..`
 
+Now to change the `z` and `x` position of the trackers and play with the detector geometry. You should modify the `$DETECTOR_PATH/compact/far_forward/B0_tracker.xml`. 
+
 ### EIC Recon installation
 
 * `git clone https://github.com/eic/EICrecon.git`
@@ -35,6 +37,12 @@ First make sure to first install eic shell and checkout the branch
 
 * `cd B0_FarForward`
 * `source ff_work.sh`
+
+Now you can try to visualize the tracker using 
+
+```
+dd
+```
 
 ## Running simulations
 

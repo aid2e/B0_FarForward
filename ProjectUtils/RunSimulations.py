@@ -24,7 +24,7 @@ def RunSim(i: int, nEvents: int):
         eicrecon_cmd = f"eicrecon -Pdd4hep:xml_files={compactFile} -Ppodio_output_include_collections=ReconstructedParticles,GeneratedParticles,ReconstructedChargedParticles,B0TrackerRecHits ResolutionStudy.edm4hep.root > recon_out.log 2>recon_err.log"
         print (eicrecon_cmd)
         os.system(eicrecon_cmd)
-        ana_cmd = f"root -q -b \'{parent_dir}/SimplePlot.C(\"podio_output.root\")\'"
+        ana_cmd = f"root -q -b \'{parent_dir}/SimpleAnalysis.C(\"podio_output.root\")\'"
         print (ana_cmd)
         os.system(ana_cmd)
         return 0
