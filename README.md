@@ -35,14 +35,9 @@ Now to change the `z` and `x` position of the trackers and play with the detecto
 
 ### Sourcing it
 
+* `git clone https://github.com/aid2e/B0_FarForward`. Make sure to use your Github personal access tokens since this is private repo check link [here](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens) 
 * `cd B0_FarForward`
 * `source ff_work.sh`
-
-Now you can try to visualize the tracker using 
-
-```
-dd
-```
 
 ## Running simulations
 
