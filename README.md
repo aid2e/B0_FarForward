@@ -66,7 +66,7 @@ This is what I get
 * `cd $EIC_PROJECT_DIR`
 * If not in eic-shell then `./eic/eic-shell`
 * `source $EIC_PROJECT_DIR/epic_install/setup.sh`
-* `git clone https://github.com/eic/EICrecon.git`
+* `git clone https://github.com/eic/EICrecon.git -b v1.11`
 * `cd EICrecon` -- then if you do `git branch` you should be on the branch `main`
 * `mkdir EICrecon_build EICrecon_install`
 * `cmake -B $EIC_PROJECT_DIR/EICrecon_build -S $EIC_PROJECT_DIR/EICrecon -DCMAKE_INSTALL_PREFIX=$EIC_PROJECT_DIR/EICrecon_install`
