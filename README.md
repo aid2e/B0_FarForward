@@ -53,7 +53,7 @@ This is what I get
 * `cmake --build $EIC_PROJECT_DIR/epic_build -j8`
 * `cmake --install $EIC_PROJECT_DIR/epic_build`
 * `source $EIC_PROJECT_DIR/epic_install/setup.sh`
-* `export DETECTOR="epic_craterlake_18x275" && export $DETECTOR_CONFIG=$DETECTOR` -- This sets the correct epic detector geometry. This will be the detector geometry one has to use for Far Forward tasks.
+* `export DETECTOR="epic_craterlake_18x275" && export $DETECTOR_CONFIG="epic_craterlake_18x275"` -- This sets the correct epic detector geometry. This will be the detector geometry one has to use for Far Forward tasks.
 
 > [!NOTE]
 > **👷 TASK ⛑️** : Visualize the detector geometry and take a screenshot of the B0 Detector system. Make sure to point to the correct detector geometry. 
@@ -84,7 +84,7 @@ Each time one has to source both `epic` and `EICrecon` and set the `$DETECTOR` a
 
 * If not in eic-shell then `$EIC_PROJECT_DIR/eic/eic-shell`
 * `source $EIC_PROJECT_DIR/epic_install/setup.sh`
-* `export DETECTOR="epic_craterlake_18x275" && export $DETECTOR_CONFIG=$DETECTOR`
+* `export DETECTOR="epic_craterlake_18x275" && export $DETECTOR_CONFIG="epic_craterlake_18x275"`
 * `source $EIC_PROJECT_DIR/EICrecon_install/bin/eicrecon-this.sh`
 * `mkdir -p $EIC_PROJECT_DIR/Simulations`
 * `cd $EIC_PROJECT_DIR/Simulations`
@@ -93,4 +93,6 @@ Each time one has to source both `epic` and `EICrecon` and set the `$DETECTOR` a
 > ** TASK ** : Open the root file and identify the B0 Tracker Hits and report back the plot for B0 Tracker Hits' z position (`position.z`). See the image below for what I get
 ![alt text](docs/assests/images/B0TrackerHits.png)
 * In order to reconstruct events, one has to use `eicrecon`. This is the command to use. `eicrecon -Pdd4hep:xml_files=${DETECTOR_PATH}/${DETECTOR_CONFIG}.xml -Ppodio_output_include_collections=ReconstructedParticles,GeneratedParticles,ReconstructedChargedParticles,BoTrackerRecHits -Pnthreads=8 FarFowardSimulation.edm4hep.root > recon_log.out 2>recon_log.err` -- This should produce `podio_output.root` file. This is the reconstructed level events.
-* `root -q -b 'SimpleAnalysis.C("podio_output.root")' > ana_log.out 2>ana_log.err` -- This analyses the reconstructed B0 tracks and computes the momentum resolution ($p = \sqrt{p_{x}^{2} + p_{y}^{2} + p_{z}^{2}}$) in bins of $1~GeV$ and transverse momentum resolution ($p_{T} = \sqrt{p_{x}^{2} + p_{y}^{2}}$) in bins of $0.1~GeV$.
+* `root -q -b 'SimpleAnalysis.C("podio_output.root")' > ana_log.out 2>ana_log.err` -- This analyses the reconstructed B0 tracks and computes the momentum resolution ($p = \sqrt{p_{x}^{2} + p_{y}^{2} + p_{z}^{2}}$) in bins of 1~GeV and transverse momentum resolution ($p_{T} = \sqrt{p_{x}^{2} + p_{y}^{2}}$) in bins of $0.1~GeV$. The output histograms are saved to a root file named `out.root`
+
+

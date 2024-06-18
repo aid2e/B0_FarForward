@@ -1,8 +1,8 @@
-void SimpleAnalysis(TString FileName)
+void SimpleAnalysis(TString FileName, TString outFileName = "out.root")
 {
     gROOT->Reset();
     TFile *f = new TFile(FileName.Data(),"READ");
-    TFile *outFile = new TFile("out.root","RECREATE");
+    TFile *outFile = new TFile(outFileName.Data(),"RECREATE");
     outFile->mkdir("momentumFits");
     outFile->mkdir("pTResolutions");
     TTree *events = (TTree*)f->Get("events");
