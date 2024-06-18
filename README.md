@@ -1,13 +1,9 @@
-# Cloning this repo
+
+# Step by step Instructions to running EPIC EIC Far forward simulations
 
 > [!NOTE]
 > Working knowledge of `git`, linux terminal, basic `python` is expected to run the code.
-
-* I have my GitHub credentials lined in VSCode and I work within the VS code environemnt. Hence, I simply clone this repo. 
-* If directly cloning on non VS code enviroment, Follow the steps in following github personal access tokens from [here](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens)
-* `git clone https://github.com/aid2e/B0_FarForward.git -b Step-by-step-intro`
-
-# Step by step Instructions to running EPIC EIC Far forward simulations
+> Minimal understanding and familiarity with EIC EPIC software framework is assumed.
 
 I am assuming the the entire project is located under the directory in the environment variable `$EIC_PROJECT_DIR`. I have set mine as `export EIC_PROJECT_DIR="/mnt/d/AID2E/Update-FF-Region"`. Also I am using `bash` as my shell.
 
@@ -20,6 +16,13 @@ This is the base working directory for the rest of the rest of the instructions.
 This is what I do in my terminal
 
 ![alt text](docs/assests/images/base-dir.png)
+
+## Cloning this repo
+
+* I have my GitHub credentials lined in VSCode and I work within the VS code environemnt. Hence, I simply clone this repo. 
+* If directly cloning on non VS code enviroment, Follow the steps in following github personal access tokens from [here](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens)
+* `cd $EIC_PROJECT_DIR`
+* `git clone https://github.com/aid2e/B0_FarForward.git -b Step-by-step-intro`
 
 ## Installation of eic-shell 
 
@@ -75,12 +78,19 @@ This is what I get
 ![alt text](docs/assests/images/eic-recon.png)
 
 
-## Running simulations of protons
+## Running simulations of protons (out of the box)
 
 Each time one has to source both `epic` and `EICrecon` and set the `$DETECTOR` and `$DETECTOR_CONFIG` before continuing 
 
+* If not in eic-shell then `$EIC_PROJECT_DIR/eic/eic-shell`
 * `source $EIC_PROJECT_DIR/epic_install/setup.sh`
 * `export DETECTOR="epic_craterlake_18x275" && export $DETECTOR_CONFIG=$DETECTOR`
 * `source $EIC_PROJECT_DIR/EICrecon_install/bin/eicrecon-this.sh`
-* `cd $EIC_PROJECT_DIR`
-* `mkdir $EIC_PROJECT_DIR`
+* `mkdir -p $EIC_PROJECT_DIR/Simulations`
+* `cd $EIC_PROJECT_DIR/Simulations`
+* `npsim --steeringFile $EIC_PROJECT_DIR/B0_FarForward/FromAlex/ddsim_steer_B0_testing.py --numberOfEvents 1000 --compactFile ${DETECTOR_PATH}/${DETECTOR_CONFIG}.xml --outputFile FarFowardSimulation.edm4hep.root > sim_log.out 2>sim_log.err` -- This uses a proton gun to throw protons with momentum $80-100~GeV$ between $0.006 - 0.012~rad$ in theta ($\theta$). The command should produce the file `FarFowardSimulation.edm4hep.root` with its associated logs `sim_log.out` and `sim_log.err`. These are the simulated level events before reconstruction. 
+> [!NOTE]
+> ** TASK ** : Open the root file and identify the B0 Tracker Hits and report back the plot for B0 Tracker Hits' z position (`position.z`). See the image below for what I get
+![alt text](docs/assests/images/B0TrackerHits.png)
+* In order to reconstruct events, one has to use `eicrecon`. This is the command to use. `eicrecon -Pdd4hep:xml_files=${DETECTOR_PATH}/${DETECTOR_CONFIG}.xml -Ppodio_output_include_collections=ReconstructedParticles,GeneratedParticles,ReconstructedChargedParticles,BoTrackerRecHits -Pnthreads=8 FarFowardSimulation.edm4hep.root > recon_log.out 2>recon_log.err` -- This should produce `podio_output.root` file. This is the reconstructed level events.
+* `root -q -b 'SimpleAnalysis.C("podio_output.root")' > ana_log.out 2>ana_log.err` -- This analyses the reconstructed B0 tracks and computes the momentum resolution ($p = \sqrt{p_{x}^{2} + p_{y}^{2} + p_{z}^{2}}$) in bins of $1~GeV$ and transverse momentum resolution ($p_{T} = \sqrt{p_{x}^{2} + p_{y}^{2}}$) in bins of $0.1~GeV$.
