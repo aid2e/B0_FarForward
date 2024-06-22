@@ -66,8 +66,9 @@ This is what I get
 * `cd $EIC_PROJECT_DIR`
 * If not in eic-shell then `./eic/eic-shell`
 * `source $EIC_PROJECT_DIR/epic_install/setup.sh`
-* `git clone https://github.com/eic/EICrecon.git -b v1.11`
+* `git clone https://github.com/eic/EICrecon.git`
 * `cd EICrecon` -- then if you do `git branch` you should be on the branch `main`
+* `git checkout v1.13.0` -- This is because of the issue raised here [#1500](https://github.com/eic/EICrecon/issues/1500)
 * `mkdir EICrecon_build EICrecon_install`
 * `cmake -B $EIC_PROJECT_DIR/EICrecon_build -S $EIC_PROJECT_DIR/EICrecon -DCMAKE_INSTALL_PREFIX=$EIC_PROJECT_DIR/EICrecon_install`
 * `cmake --build $EIC_PROJECT_DIR/EICrecon_build -j8`
@@ -93,6 +94,11 @@ Each time one has to source both `epic` and `EICrecon` and set the `$DETECTOR` a
 > ** TASK ** : Open the root file and identify the B0 Tracker Hits and report back the plot for B0 Tracker Hits' z position (`position.z`). See the image below for what I get
 ![alt text](docs/assests/images/B0TrackerHits.png)
 * In order to reconstruct events, one has to use `eicrecon`. This is the command to use. `eicrecon -Pdd4hep:xml_files=${DETECTOR_PATH}/${DETECTOR_CONFIG}.xml -Ppodio_output_include_collections=ReconstructedParticles,GeneratedParticles,ReconstructedChargedParticles,BoTrackerRecHits -Pnthreads=8 FarFowardSimulation.edm4hep.root > recon_log.out 2>recon_log.err` -- This should produce `podio_output.root` file. This is the reconstructed level events.
+> [!NOTE]
+> ** TASK ** : Open the root file and identify ReconstructedChargedParticles under the events tree and look into 'z' momentum (momentum.z) and report back the plot. See the image below for what I get
+![alt text](docs/assests/images/ReconstructedChargedParticles.png)
 * `root -q -b 'SimpleAnalysis.C("podio_output.root")' > ana_log.out 2>ana_log.err` -- This analyses the reconstructed B0 tracks and computes the momentum resolution ($p = \sqrt{p_{x}^{2} + p_{y}^{2} + p_{z}^{2}}$) in bins of 1~GeV and transverse momentum resolution ($p_{T} = \sqrt{p_{x}^{2} + p_{y}^{2}}$) in bins of $0.1~GeV$. The output histograms are saved to a root file named `out.root`
+> [!NOTE]
+> ** TASK ** : Open the root file and identify ReconstructedChargedParticles and look into 'z' momentum (momentum.z) and report back the plot. See the image below for what I get
 
 

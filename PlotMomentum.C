@@ -1,6 +1,12 @@
 
 
-void PlotMomentum(TString FileName, TString outFileSig)
+/**
+ * Plots the momentum and pT resolutions for protons in a given file.
+ *
+ * @param FileName The name of the input file.
+ * @param outFileSig The output file signature (default is "out").
+ */
+void PlotMomentum(TString FileName, TString outFileSig = "out")
 {
     gStyle->SetTitleSize(0.08);
     gStyle->SetOptFit(11);
