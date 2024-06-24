@@ -53,7 +53,7 @@ This is what I get
 * `cmake --build $EIC_PROJECT_DIR/epic_build -j8`
 * `cmake --install $EIC_PROJECT_DIR/epic_build`
 * `source $EIC_PROJECT_DIR/epic_install/setup.sh`
-* `export DETECTOR="epic_craterlake_18x275" && export $DETECTOR_CONFIG="epic_craterlake_18x275"` -- This sets the correct epic detector geometry. This will be the detector geometry one has to use for Far Forward tasks.
+* `export DETECTOR="epic_craterlake_18x275" && export DETECTOR_CONFIG="epic_craterlake_18x275"` -- This sets the correct epic detector geometry. This will be the detector geometry one has to use for Far Forward tasks.
 
 > [!NOTE]
 > **👷 TASK ⛑️** : Visualize the detector geometry and take a screenshot of the B0 Detector system. Make sure to point to the correct detector geometry. 
@@ -85,7 +85,7 @@ Each time one has to source both `epic` and `EICrecon` and set the `$DETECTOR` a
 
 * If not in eic-shell then `$EIC_PROJECT_DIR/eic/eic-shell`
 * `source $EIC_PROJECT_DIR/epic_install/setup.sh`
-* `export DETECTOR="epic_craterlake_18x275" && export $DETECTOR_CONFIG="epic_craterlake_18x275"`
+* `export DETECTOR="epic_craterlake_18x275" && export DETECTOR_CONFIG="epic_craterlake_18x275"`
 * `source $EIC_PROJECT_DIR/EICrecon_install/bin/eicrecon-this.sh`
 * `mkdir -p $EIC_PROJECT_DIR/Simulations`
 * `cd $EIC_PROJECT_DIR/Simulations`
@@ -99,7 +99,7 @@ Each time one has to source both `epic` and `EICrecon` and set the `$DETECTOR` a
 ![alt text](docs/assests/images/ReconstructedChargedParticles.png)
 
 > [!WARNING]
-> If you dont see any particles, then it is possible that the error occured [here](https://github.com/eic/EICrecon/issues/1500) and you have to checkout the section [Adhoc fixing](#Adhoc-fixing) to fix it.
+> If you dont see any particles, then it is possible that the error occured [here](https://github.com/eic/EICrecon/issues/1500) and you have to checkout the section [Adhoc fixing](#adhoc-fixing-adhoc-fixing) to fix it.
 * `root -q -b '$EIC_PROJECT_DIR/B0_FarForward/SimpleAnalysis.C("podio_output.root")' > ana_log.out 2>ana_log.err` -- This analyses the reconstructed B0 tracks and computes the momentum resolution ($p = \sqrt{p_{x}^{2} + p_{y}^{2} + p_{z}^{2}}$) in bins of 1~GeV and transverse momentum resolution ($p_{T} = \sqrt{p_{x}^{2} + p_{y}^{2}}$) in bins of $0.1~GeV$. The output histograms are saved to a root file named `out.root`
 > [!NOTE]
 > ** TASK ** : Open the root file and identify the histograms and report back the histograms under the folder `pTResolutions`. There should be very few events since only 1000 tracks are generated. This is what I get 
@@ -124,9 +124,9 @@ Each time one has to source both `epic` and `EICrecon` and set the `$DETECTOR` a
 * `mkdir Old_eic-shell`
 * `cd Old_eic-shell`
 * `singularity` has to be installed in order for this to work. If not install `singularity` by following [here](https://docs.sylabs.io/guides/3.0/user-guide/installation.html)
-* `singularity pull --name eic-jug_xl-nightly-2024-03-12.sif docker://eicweb/jug_xl@sha256:213e55fb304a92eb5925130cdff9529ea55c570b21ded9ec24471aa9c61219d8`
+* `singularity pull --name eic-jug_xl-nightly-2024-03-12.sif docker://eicweb/jug_xl@sha256:213e55fb304a92eb5925130cdff9529ea55c570b21ded9ec24471aa9c61219d8` -- This is a adhoc solution, I found, since, the latest `eic-jug_xl` image is updated with so many changes to track what really went wrong with 
 * This should produce a file `eic-jug_xl-nightly-2024-03-12.sif`. Now modify the eic-shell script in `$EIC_PROJECT_DIR/eic/eic-shell` to use this image. So lets copy it over here first `cp $EIC_PROJECT_DIR/eic/eic-shell ./custom-eic-shell` 
 * Replace the last line in `custom-eic-shell` by replacing the last line For me it is `${SIF:-/mnt/d/AID2E/Update-FF-Region/eic/local/lib/jug_xl-nightly.sif}` to `${SIF:-/mnt/d/AID2E/Update-FF-Region/Old_eic-shell/eic-jug_xl-nightly-2024-03-12.sif}`
 * `$EIC_PROJECT_DIR/Old_eic-shell/custom-eic-shell`
-* Recompile `epic` as in [Installation of epic](#installation-of-epic)
-* Recompile `EICrecon` but with version tag `v1.11.0` and follow [Installation of EICrecon](#installation-of-eicrecon) (Again with the version tag `v1.11.0`)
+* Recompile `epic` as in [Installation of epic](#installation-of-epic-installation-of-epic)
+* Recompile `EICrecon` but with version tag `v1.11.0` and follow [Installation of EICrecon](#installation-of-eicrecon-installation-of-eicrecon) (Again with the version tag `v1.11.0`)
