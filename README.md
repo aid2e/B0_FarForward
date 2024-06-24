@@ -36,7 +36,7 @@ This is what I get
 
 ![alt text](docs/assests/images/eic-shell.png)
 
-## Installation of epic {#installation-of-epic}
+## Installation of epic
 
 * `cd $EIC_PROJECT_DIR`
 * If not in eic-shell then `./eic/eic-shell`
@@ -61,7 +61,7 @@ This is what I get
 
 ![alt text](docs/assests/images/B0-detector-system.png)
 
-## Installation of EICrecon {#installation-of-eicrecon}
+## Installation of EICrecon
 
 * `cd $EIC_PROJECT_DIR`
 * If not in eic-shell then `./eic/eic-shell`
@@ -99,7 +99,7 @@ Each time one has to source both `epic` and `EICrecon` and set the `$DETECTOR` a
 ![alt text](docs/assests/images/ReconstructedChargedParticles.png)
 
 > [!WARNING]
-> If you dont see any particles, then it is possible that the error occured [here](https://github.com/eic/EICrecon/issues/1500) and you have to checkout the section [Adhoc fixing](#adhoc-fixing-adhoc-fixing) to fix it.
+> If you dont see any particles, then it is possible that the error occured [here](https://github.com/eic/EICrecon/issues/1500) and you have to checkout the section [Adhoc fixing](#adhoc-fixing) to fix it.
 * `root -q -b '$EIC_PROJECT_DIR/B0_FarForward/SimpleAnalysis.C("podio_output.root")' > ana_log.out 2>ana_log.err` -- This analyses the reconstructed B0 tracks and computes the momentum resolution ($p = \sqrt{p_{x}^{2} + p_{y}^{2} + p_{z}^{2}}$) in bins of 1~GeV and transverse momentum resolution ($p_{T} = \sqrt{p_{x}^{2} + p_{y}^{2}}$) in bins of $0.1~GeV$. The output histograms are saved to a root file named `out.root`
 > [!NOTE]
 > ** TASK ** : Open the root file and identify the histograms and report back the histograms under the folder `pTResolutions`. There should be very few events since only 1000 tracks are generated. This is what I get 
@@ -118,7 +118,7 @@ Each time one has to source both `epic` and `EICrecon` and set the `$DETECTOR` a
 * The plot shown below is made by moving the `z-center` to `6.3cm`, `6.4cm`, `6.45cm`, `6.5cm` with each design being simulated with 500k proton tracks. Check out updates and more info [here](https://docs.google.com/presentation/d/1bCKGQP6oY3mFkQFH7h8hN_vrfP3n-94vbKh-1YmtTo0/edit?usp=sharing)
 ![alt text](docs/assests/images/multiple-config.png)
 
-# Adhoc fixing {#Adhoc-fixing}
+# Adhoc fixing
 
 * `cd $EIC_PROJECT_DIR`
 * `mkdir Old_eic-shell`
@@ -128,5 +128,5 @@ Each time one has to source both `epic` and `EICrecon` and set the `$DETECTOR` a
 * This should produce a file `eic-jug_xl-nightly-2024-03-12.sif`. Now modify the eic-shell script in `$EIC_PROJECT_DIR/eic/eic-shell` to use this image. So lets copy it over here first `cp $EIC_PROJECT_DIR/eic/eic-shell ./custom-eic-shell` 
 * Replace the last line in `custom-eic-shell` by replacing the last line For me it is `${SIF:-/mnt/d/AID2E/Update-FF-Region/eic/local/lib/jug_xl-nightly.sif}` to `${SIF:-/mnt/d/AID2E/Update-FF-Region/Old_eic-shell/eic-jug_xl-nightly-2024-03-12.sif}`
 * `$EIC_PROJECT_DIR/Old_eic-shell/custom-eic-shell`
-* Recompile `epic` as in [Installation of epic](#installation-of-epic-installation-of-epic)
-* Recompile `EICrecon` but with version tag `v1.11.0` and follow [Installation of EICrecon](#installation-of-eicrecon-installation-of-eicrecon) (Again with the version tag `v1.11.0`)
+* Recompile `epic` as in [Installation of epic](#installation-of-epic)
+* Recompile `EICrecon` but with version tag `v1.11.0` and follow [Installation of EICrecon](#installation-of-eicrecon) (Again with the version tag `v1.11.0`)
