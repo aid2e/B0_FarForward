@@ -6,7 +6,7 @@
  * @param FileName The name of the input file.
  * @param outFileSig The output file signature (default is "out").
  */
-void PlotMomentum(TString FileName, TString outFileSig = "out")
+void PlotMomentum(TString FileName, TString outFileSig = "out-fit")
 {
     gStyle->SetTitleSize(0.08);
     gStyle->SetOptFit(11);
