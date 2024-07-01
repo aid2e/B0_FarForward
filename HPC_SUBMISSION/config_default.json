@@ -1,0 +1,24 @@
+{
+    "container" : {
+        "name" : "EPIC_CONTAINER",
+        "path" : "/sciclone/home/ksuresh/data10/AID2E/eic/eic-shell"
+    },
+    "input" : {
+        "CodeDir" : "/sciclone/home/ksuresh/data10/AID2E/FarForward/Simulations/PBS-SUBMIT/SCRIPTS"
+    },
+    "output" : {
+        "outDir" : "/sciclone/home/ksuresh/data10/AID2E/FarForward/Simulations/PBS_OUTPUT/DefaultConfig",
+        "logDir" : "/sciclone/home/ksuresh/data10/AID2E/FarForward/Simulations/PBS_OUTPUT/DefaultConfig/logs"
+    },
+    "epic" : {
+        "epicDir" : "/sciclone/home/ksuresh/data10/AID2E/FarForward/epic_install"
+    },
+    "eicrecon" : {
+        "eicreconDir" : "/sciclone/home/ksuresh/data10/AID2E/FarForward/EICrecon_install"
+    },
+    "simulation": {
+        "name" : "default_config",
+        "nEvents" : 100,
+        "nJobs" : 20
+    }
+}
