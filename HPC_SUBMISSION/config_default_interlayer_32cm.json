@@ -4,7 +4,8 @@
         "path" : "/sciclone/home/ksuresh/data10/AID2E/eic/eic-shell"
     },
     "input" : {
-        "CodeDir" : "/sciclone/home/ksuresh/data10/AID2E/FarForward/Simulations/PBS-SUBMIT/SCRIPTS"
+        "CodeDir" : "/sciclone/home/ksuresh/data10/AID2E/FarForward/Simulations/PBS-SUBMIT/SCRIPTS",
+        "submit_system" : "PBS" 
     },
     "output" : {
         "outDir" : "/sciclone/home/ksuresh/data10/AID2E/FarForward/Simulations/PBS_OUTPUT/DefaultConfig_interlayer_32cm",

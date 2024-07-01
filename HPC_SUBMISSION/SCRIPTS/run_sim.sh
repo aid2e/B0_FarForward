@@ -12,8 +12,8 @@ N_EVENTS=n_events
 source $EPIC_INSTALL/setup.sh
 source $EICRECON_INSTALL/bin/eicrecon-this.sh
 
-export DETECTOR="epic_craterlake_18x275_default_interlayer_32cm"
-export DETECTOR_CONFIG="epic_craterlake_18x275_default_interlayer_32cm"
+export DETECTOR="detector_name"
+export DETECTOR_CONFIG="detector_name"
 
 compactFile=${DETECTOR_PATH}/${DETECTOR_CONFIG}.xml
 

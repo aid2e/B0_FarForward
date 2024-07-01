@@ -11,8 +11,8 @@ def main(args):
     n_events = int(simulation["nEvents"])
     n_jobs = int(simulation["nJobs"])
     script_dir = pbsconfig["input"]["CodeDir"]
-    run_sim_script = os.path.join(script_dir, "run_sim.sh")
-    submit_script = os.path.join(script_dir, "SUBMIT.csh")
+    run_sim_script = os.path.join(script_dir, pbsconfig["input"]["run_sim_template"])
+    submit_script = os.path.join(script_dir, pbsconfig["input"]["submit_template"])
     container = pbsconfig["container"]["path"]
     
     outDir = pbsconfig["output"]["outDir"]
@@ -41,7 +41,7 @@ def main(args):
         submit_contents = submit_contents.replace("LOG_DIR", logDir)
         submit_contents = submit_contents.replace("OUTPUT_DIR", job_dir)
         submit_contents = submit_contents.replace("EIC_SHELL", container)
-        submit_contents = submit_contents.replace("SCRIPTFILE", os.path.join(job_dir, "run_sim.sh"))
+        submit_contents = submit_contents.replace("SCRIPTFILE", os.path.join(job_dir, pbsconfig["input"]["run_sim_template"]))
         
         with open(f"{job_dir}/SUBMIT.csh", "w") as f:
             f.write(submit_contents)
@@ -54,12 +54,15 @@ def main(args):
         run_sim_contents = run_sim_contents.replace("code_dir", script_dir)
         run_sim_contents = run_sim_contents.replace("n_events", str(n_events))
         run_sim_contents = run_sim_contents.replace("out_dir", job_dir)
+        run_sim_contents = run_sim_contents.replace("detector_name", sim_name)
         
         with open(f"{job_dir}/run_sim.sh", "w") as f:
             f.write(run_sim_contents)
-        
-        os.system("qsub " + os.path.join(job_dir, "SUBMIT.csh"))
-        
+        command = "sbatch " + os.path.join(job_dir, pbsconfig["input"]["submit_template"])
+        with open (f"history_log_{sim_name}.txt", "a+") as f:
+            f.write(command)
+            out = os.system(command)
+            f.write(str(out))
         
         
 if __name__ == "__main__":

@@ -1,4 +1,4 @@
-#!/bin/tcsh
+#!/bin/bash
 
 #SBATCH --partition=production          # Partition (queue)
 #SBATCH --account=eic
@@ -10,13 +10,15 @@
 #SBATCH --ntasks=1                      # Number of tasks
 #SBATCH --ntasks-per-node=1             # Number of tasks per node
 #SBATCH --cpus-per-task=1               # Number of CPUs per task
-#SBATCH --mail-type=END,FAIL            # Mail events (NONE, BEGIN, END, FAIL, ALL)
+#SBATCH --constraint=farm19|farm23      # node types requirement
+#SBATCH --mail-type=FAIL            # Mail events (NONE, BEGIN, END, FAIL, ALL)
 #SBATCH --mail-user=ksuresh@wm.edu      # Email address
 
 
 echo "RUNNING SIMULATIONS IN ${HOSTNAME}"
-source /etc/profile.d/modules.csh
+source /etc/profile.d/modules.sh
 # Load modules or software if needed
+module avail singularity
 module load singularity
 # Check if any error occurred during the previous command
 if [ $? -ne 0 ]; then

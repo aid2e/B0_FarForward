@@ -124,7 +124,8 @@ Each time one has to source both `epic` and `EICrecon` and set the `$DETECTOR` a
 * `mkdir Old_eic-shell`
 * `cd Old_eic-shell`
 * `singularity` has to be installed in order for this to work. If not install `singularity` by following [here](https://docs.sylabs.io/guides/3.0/user-guide/installation.html)
-* `singularity pull --name eic-jug_xl-nightly-2024-03-12.sif docker://eicweb/jug_xl@sha256:213e55fb304a92eb5925130cdff9529ea55c570b21ded9ec24471aa9c61219d8` -- This is a adhoc solution, I found, since, the latest `eic-jug_xl` image is updated with so many changes to track what really went wrong with 
+* `mkdir $PWD/tmp && export SINGULARITY_CACHEDIR=$PWD`
+* `singularity pull --tmpdir=$PWD/tmp --name eic-jug_xl-nightly-2024-03-12.sif docker://eicweb/jug_xl@sha256:213e55fb304a92eb5925130cdff9529ea55c570b21ded9ec24471aa9c61219d8` -- This is a adhoc solution, I found, since, the latest `eic-jug_xl` image is updated with so many changes to track what really went wrong with 
 * This should produce a file `eic-jug_xl-nightly-2024-03-12.sif`. Now modify the eic-shell script in `$EIC_PROJECT_DIR/eic/eic-shell` to use this image. So lets copy it over here first `cp $EIC_PROJECT_DIR/eic/eic-shell ./custom-eic-shell` 
 * Replace the last line in `custom-eic-shell` by replacing the last line For me it is `${SIF:-/mnt/d/AID2E/Update-FF-Region/eic/local/lib/jug_xl-nightly.sif}` to `${SIF:-/mnt/d/AID2E/Update-FF-Region/Old_eic-shell/eic-jug_xl-nightly-2024-03-12.sif}`
 * `$EIC_PROJECT_DIR/Old_eic-shell/custom-eic-shell`
