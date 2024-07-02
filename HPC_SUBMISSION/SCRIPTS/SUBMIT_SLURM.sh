@@ -10,21 +10,20 @@
 #SBATCH --ntasks=1                      # Number of tasks
 #SBATCH --ntasks-per-node=1             # Number of tasks per node
 #SBATCH --cpus-per-task=1               # Number of CPUs per task
-#SBATCH --constraint=farm19|farm23      # node types requirement
+#SBATCH --mem-per-cpu=2G                # Main memory in MByte per CPU
 #SBATCH --mail-type=FAIL            # Mail events (NONE, BEGIN, END, FAIL, ALL)
 #SBATCH --mail-user=ksuresh@wm.edu      # Email address
 
 
 echo "RUNNING SIMULATIONS IN ${HOSTNAME}"
-source /etc/profile.d/modules.sh
-# Load modules or software if needed
-module avail singularity
-module load singularity
-# Check if any error occurred during the previous command
+
+which singularity
+
 if [ $? -ne 0 ]; then
-    echo "An error occurred. Exiting..."
+    echo "Singularity not found. Exiting..."
     exit 1
 fi
+
 
 echo "Successfully loaded singularity $(which singularity)"
 

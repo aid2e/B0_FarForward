@@ -19,7 +19,7 @@
         "eicreconDir" : "/volatile/halld/home/ksuresh/ePIC-EIC-2024/EICrecon_install"
     },
     "simulation": {
-        "name" : "epic_craterlake_18x275",
+        "name" : "epic_craterlake_18x275_default_interlayer_25cm",
         "nEvents" : 2000,
         "nJobs" : 5
     }

@@ -4,6 +4,7 @@ import os, argparse, json, uuid
 
 def main(args):
     # Get the PBSCONFIG info
+    
     with open(args.configFile, "r") as f:
         pbsconfig = json.load(f)
     simulation = pbsconfig["simulation"]
@@ -27,8 +28,10 @@ def main(args):
     epic_install = pbsconfig["epic"]["epicDir"]
     eicrecon_install = pbsconfig["eicrecon"]["eicreconDir"]
     
+    if os.path.exists(f"history_log_{sim_name}.txt"):
+       os.system(f"rm history_log_{sim_name}.txt") 
+    
     for it in range(n_jobs):
-        uuid_str = str(uuid.uuid4())
         jobName = f"{sim_name}_{it}"
         job_dir = os.path.join(workDir, f"ITER_{it}")
         if not os.path.exists(job_dir):
@@ -43,7 +46,7 @@ def main(args):
         submit_contents = submit_contents.replace("EIC_SHELL", container)
         submit_contents = submit_contents.replace("SCRIPTFILE", os.path.join(job_dir, pbsconfig["input"]["run_sim_template"]))
         
-        with open(f"{job_dir}/SUBMIT.csh", "w") as f:
+        with open(f"{job_dir}/"+pbsconfig["input"]["submit_template"], "w") as f:
             f.write(submit_contents)
             
         # Modify run_sim.sh script
@@ -56,7 +59,7 @@ def main(args):
         run_sim_contents = run_sim_contents.replace("out_dir", job_dir)
         run_sim_contents = run_sim_contents.replace("detector_name", sim_name)
         
-        with open(f"{job_dir}/run_sim.sh", "w") as f:
+        with open(f"{job_dir}/" + pbsconfig["input"]["run_sim_template"], "w") as f:
             f.write(run_sim_contents)
         command = "sbatch " + os.path.join(job_dir, pbsconfig["input"]["submit_template"])
         with open (f"history_log_{sim_name}.txt", "a+") as f:
