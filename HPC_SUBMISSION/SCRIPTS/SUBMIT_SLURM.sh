@@ -11,6 +11,7 @@
 #SBATCH --ntasks-per-node=1             # Number of tasks per node
 #SBATCH --cpus-per-task=1               # Number of CPUs per task
 #SBATCH --mem-per-cpu=2G                # Main memory in MByte per CPU
+#SBATCH --constraint=farm19|farm23      # node types requirement
 #SBATCH --mail-type=FAIL            # Mail events (NONE, BEGIN, END, FAIL, ALL)
 #SBATCH --mail-user=ksuresh@wm.edu      # Email address
 
