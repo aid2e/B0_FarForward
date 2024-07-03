@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import os, argparse, json, uuid
+import os, argparse, json, subprocess
 
 def main(args):
     # Get the PBSCONFIG info
@@ -61,11 +61,14 @@ def main(args):
         
         with open(f"{job_dir}/" + pbsconfig["input"]["run_sim_template"], "w") as f:
             f.write(run_sim_contents)
-        command = "sbatch " + os.path.join(job_dir, pbsconfig["input"]["submit_template"])
-        with open (f"history_log_{sim_name}.txt", "a+") as f:
-            f.write(command)
-            out = os.system(command)
-            f.write(str(out))
+        command = ["sbatch", os.path.join(job_dir, pbsconfig["input"]["submit_template"])]
+        with open(f"history_log_{sim_name}.txt", "a+") as f:
+            f.write(": \t".join(command))
+            result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            stdout = result.stdout.decode('utf-8')
+            stderr = result.stderr.decode('utf-8')
+            f.write(stdout + ": \t ")
+            f.write(stderr + "\n")
         
         
 if __name__ == "__main__":

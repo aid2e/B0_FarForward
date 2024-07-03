@@ -9,8 +9,8 @@
         "run_sim_template" : "run_sim.sh"
     },
     "output" : {
-        "outDir" : "/volatile/halld/home/ksuresh/ePIC-EIC-2024/Simulations/DefaultConfig",
-        "logDir" : "/volatile/halld/home/ksuresh/ePIC-EIC-2024/Simulations/DefaultConfig/logs"
+        "outDir" : "/volatile/halld/home/ksuresh/ePIC-EIC-2024/ProductionSimulations/DefaultConfig",
+        "logDir" : "/volatile/halld/home/ksuresh/ePIC-EIC-2024/ProductionSimulations/DefaultConfig/logs"
     },
     "epic" : {
         "epicDir" : "/volatile/halld/home/ksuresh/ePIC-EIC-2024/epic_install"
@@ -21,6 +21,6 @@
     "simulation": {
         "name" : "epic_craterlake_18x275",
         "nEvents" : 2000,
-        "nJobs" : 5
+        "nJobs" : 250
     }
 }

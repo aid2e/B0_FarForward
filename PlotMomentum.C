@@ -1,4 +1,37 @@
 
+/**
+ * Calculates the resolution function for a given set of parameters.
+ * 
+ * @param x The input value.
+ * @param params The array of parameters.
+ *               params[0] - amplitude1: The amplitude of the first Gaussian.
+ *               params[1] - mean: The mean value of the distribution.
+ *               params[2] - sigma1: The standard deviation of the first Gaussian.
+ *               params[3] - ratio: The ratio of the amplitudes of the two Gaussians.
+ *               params[4] - sigma2: The standard deviation of the second Gaussian.
+ * @return The value of the resolution function at the given input value.
+ */
+Double_t resolution_func(Double_t *x, Double_t *params) {
+    // Extract parameters
+    Double_t amplitude1 = params[0];
+    Double_t mean = params[1];
+    Double_t sigma1 = params[2];
+    Double_t ratio = params[3];
+    Double_t sigma2 = params[4];
+
+    // Calculate the first Gaussian
+    Double_t gauss1 = amplitude1 * TMath::Exp(-0.5 * TMath::Power((x[0] - mean) / sigma1, 2));
+
+    // Calculate the amplitude of the second Gaussian
+    Double_t amplitude2 = amplitude1 * ratio;
+
+    // Calculate the second Gaussian
+    Double_t gauss2 = amplitude2 * TMath::Exp(-0.5 * TMath::Power((x[0] - mean) / sigma2, 2));
+
+    // Return the sum of the two Gaussians
+    return gauss1 + gauss2;
+}
+
 
 /**
  * Plots the momentum and pT resolutions for protons in a given file.
@@ -70,8 +103,9 @@ void PlotMomentum(TString FileName, TString outFileSig = "out-fit")
         canvasMom[i] = new TCanvas(Form("canvasMom_%d",i), Form("canvasMom_%d",i));
         sigma = h_mom_res[i]->GetRMS();
         
-        f_mom_res[i] = new TF1(Form("f_mom_res_%d",i),"gaus+gaus(3)",-dev*sigma,dev*sigma);
-        f_mom_res[i]->SetParameters(h_mom_res[i]->GetMaximum()*0.8,mean,0.1*sigma, h_mom_res[i]->GetMaximum()*0.1,mean,0.5*sigma);
+        f_mom_res[i] = new TF1(Form("f_mom_res_%d",i),resolution_func,-dev*sigma,dev*sigma, 5);
+        //f_mom_res[i]->SetParameters(h_mom_res[i]->GetMaximum()*0.8,mean,0.1*sigma, h_mom_res[i]->GetMaximum()*0.1,mean,0.5*sigma);
+        f_mom_res[i]->SetParameters(h_mom_res[i]->GetMaximum()*0.8,mean,0.1, 0.5, 0.5*sigma);
         h_mom_res[i]->Fit(Form("f_mom_res_%d",i),"R");
 
         A1 = f_mom_res[i]->GetParameter(0);
