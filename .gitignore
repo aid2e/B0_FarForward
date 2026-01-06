@@ -16,3 +16,20 @@ edm4eic/
 __init__.py
 hepevt_gen.py
 Singularity.def
+test.py
+idds_logs/
+panda_logs/
+.venv/
+
+# Ignore files used for iFarm/Slurm
+events/
+outputs/
+job.mobo.slurm.sh
+run.chunktask.sh
+run.mobo.sh
+bobo.env
+checkpoint.py
+chunktask.py
+mobo.py
+utils.py
+run_slurm.py
