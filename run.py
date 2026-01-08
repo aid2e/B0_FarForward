@@ -1,108 +1,64 @@
 """ Run Bayesian optimization for B0 Far-Forward tracker design using Ax and PanDAiDDS """
 
 import logging
+import yaml
 
+# loading yaml
+
+with open("b0_params.yml") as f:
+    CFG = yaml.safe_load(f)
 
 # objective function
 
+def objective_function(**parameterization):
 
-def objective_function(a, b, c, d, e, f, g, h, i):
-
+    import os
     from simu import launch
     from analysis import meas_kin_in_container
+    from geom import create_xml
 
-    # simulation wrapper
+    geom_values = {
+        "z1" : parameterization["b0_tracker.z1"] ,
+        "dz2": parameterization["b0_tracker.dz2"],
+        "dz3": parameterization["b0_tracker.dz3"],
+        "dz4": parameterization["b0_tracker.dz4"],
+    }
 
-    x_pos = [a, b, c, d]
-    outputfile = launch(x_pos, 100)
+    jobid = os.environ.get("PANDA_JOB_ID", "local")
+    b0_xml_job = create_xml(geom_values, jobid, CFG)
 
-    # objective
+    outputfile = launch(geom_values, int(CFG["simulation"]["n_events"]), CFG)
 
-    x_mask = [e, f, g, h, i]
+    x_mask = [
+        parameterization.get("analysis_mask.e", 0.0),
+        parameterization.get("analysis_mask.f", 0.0),
+        parameterization.get("analysis_mask.g", 0.0),
+        parameterization.get("analysis_mask.h", 0.0),
+        parameterization.get("analysis_mask.i", 0.0),
+    ]
+
     obj = meas_kin_in_container(outputfile, x_mask)
-
-    return {"objective": obj['p_err']}
-
+    
+    return {"objective": obj["p_err"]}
 
 # launch 
-
 
 if __name__ == "__main__":
     
     from ax.service.ax_client import AxClient, ObjectiveProperties
     from scheduler import AxScheduler, PanDAiDDSRunner, JobLibRunner
     from scheduler.utils.common import setup_logging
+    from param_config import build_ax_parameters
 
     setup_logging(log_level="debug")
 
     logging.debug("setup ax client")
 
-    # Initialize Ax client
-
+    group_name = "b0_geom_and_mask"
     ax_client = AxClient()
-
-    logging.info("Creating experiment")
-
-    # Define your parameter space
-
     ax_client.create_experiment(
         name="my_experiment",
-        parameters=[
-            {
-                "name": "a",
-                "type": "range",
-                "bounds": [20.0, 21.0], # cm
-                "value_type": "float",
-            },
-            {
-                "name": "b",
-                "type": "range",
-                "bounds": [20.0, 21.0], # cm
-                "value_type": "float",
-            },
-            {
-                "name": "c",
-                "type": "range",
-                "bounds": [20.0, 21.0], # cm
-                "value_type": "float",
-            },
-            {
-                "name": "d",
-                "type": "range",
-                "bounds": [20.0, 21.0], # cm
-                "value_type": "float",
-            },
-            {
-                "name": "e",
-                "type": "range",
-                "bounds": [-1.0, 1.0],
-                "value_type": "float",
-            },
-            {
-                "name": "f",
-                "type": "range",
-                "bounds": [-1.0, 1.0],
-                "value_type": "float",
-            },
-            {
-                "name": "g",
-                "type": "range",
-                "bounds": [-1.0, 1.0],
-                "value_type": "float",
-            },
-            {
-                "name": "h",
-                "type": "range",
-                "bounds": [-1.0, 1.0],
-                "value_type": "float",
-            },
-            {
-                "name": "i",
-                "type": "range",
-                "bounds": [-1.0, 1.0],
-                "value_type": "float",
-            },
-        ],
+        parameters=build_ax_parameters(CFG, group_name),
         objectives={"objective": ObjectiveProperties(minimize=True)},
     )
 
@@ -139,9 +95,9 @@ if __name__ == "__main__":
             "eic-software", "epic-geom-drich-mobo", "irt", "share", "back*",
             "__pycache__", "events", "checkpoints"
         ],
-        "max_walltime": 3600,
-        "core_count": 1,
-        "total_memory": 4000,
+        "max_walltime": int(CFG["simulation"]["max_walltime"]),
+        "core_count": int(CFG["simulation"]["core_count"]),
+        "total_memory": int(CFG["simulation"]["total_memory"]),
         "enable_separate_log": True,
         "job_dir": None,
     }
@@ -163,5 +119,5 @@ if __name__ == "__main__":
     
     # Run the optimization
 
-    best_params = scheduler.run_optimization(max_trials=2)
+    best_params = scheduler.run_optimization(max_trials=int(CFG["simulation"]["n_trials"]))
     print("Best parameters:", best_params)
