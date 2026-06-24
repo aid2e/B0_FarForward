@@ -1,0 +1,58 @@
+simulation:
+  n_events: 10
+  n_trials: 2
+  max_walltime: 3600
+  core_count: 1
+  total_memory: 4000
+detector_parameters:
+  b0_tracker:
+    file_path: "share/epic/compact/far_forward/B0_tracker.xml"
+    parameters:
+      z1:
+        value: -50
+        unit: "cm"
+        bounds: [-50, -30]
+      dz2:
+        value: -20
+        unit: "cm"
+        bounds: [-20, -5]
+      dz3:
+        value: 0.0
+        unit: "cm"
+        bounds: [0, 20]
+      dz4:
+        value: 30.0
+        unit: "cm"
+        bounds: [30, 40]
+
+  analysis_mask:
+    parameters:
+      e: { value: 0.0, bounds: [-1.0, 1.0] }
+      f: { value: 0.0, bounds: [-1.0, 1.0] }
+      g: { value: 0.0, bounds: [-1.0, 1.0] }
+      h: { value: 0.0, bounds: [-1.0, 1.0] }
+      i: { value: 0.0, bounds: [-1.0, 1.0] }
+
+xml_expression_map:
+  b0_tracker:
+    B0TrackerLayer1_zstart: "{z1}"
+    B0TrackerLayer2_zstart: "{dz2}"
+    B0TrackerLayer3_zstart: "{dz3}"
+    B0TrackerLayer4_zstart: "{dz4}"
+
+optimization_groups:
+  b0_geom_only:
+    - "b0_tracker.z1"
+    - "b0_tracker.dz2"
+    - "b0_tracker.dz3"
+    - "b0_tracker.dz4"
+  b0_geom_and_mask:
+    - "b0_tracker.z1"
+    - "b0_tracker.dz2"
+    - "b0_tracker.dz3"
+    - "b0_tracker.dz4"
+    - "analysis_mask.e"
+    - "analysis_mask.f"
+    - "analysis_mask.g"
+    - "analysis_mask.h"
+    - "analysis_mask.i"

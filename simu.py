@@ -22,8 +22,12 @@ def _iter_tag(x):
 
     Returns:
         str: Trial tag.
-    """
-    s = json.dumps([float(v) for v in x], separators=(",", ":"))
+    """    
+    if isinstance(x, dict):
+        payload = [float(x[k]) for k in sorted(x.keys())]
+    else:
+        payload = [float(v) for v in x]
+    s = json.dumps(payload, separators=(",", ":"))
     return "it_" + hashlib.sha1(s.encode()).hexdigest()[:10]
 
 
@@ -170,7 +174,7 @@ def run_npsim(b0_xml_job, iter_tag, n_events):
 # simulation launching function
 
 
-def launch(x, n_events):
+def launch(x: dict, n_events: int, cfg: dict):
     """
     Run one full simulation trial (geometry edit + npsim).
 
@@ -187,7 +191,7 @@ def launch(x, n_events):
 
     # geometry modification
     print(f"[DEBUG simu.launch] Start: geometry modification - x={x}.")
-    b0_xml_job = create_xml(x, jobid)
+    b0_xml_job = create_xml(x, jobid, cfg)
     print(f"[DEBUG simu.launch] Achieved: geometry modification - x={x}.")
 
     # simulation

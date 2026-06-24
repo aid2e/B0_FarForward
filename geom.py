@@ -5,49 +5,73 @@ import xml.etree.ElementTree as ET
 import shutil
 from pathlib import Path
 
-
-def editGeom(x, b0_xml_job):
+def editGeom(values: dict, b0_xml_job: str, expr_map: dict):
     """
-    Update z-start positions of B0 tracker layers in a job-specific XML file.
-
-    Args:
-        x (tuple): (z1, dz2, dz3, dz4) geometry offsets.
-        b0_xml_job (str): Path to B0_tracker_<jobid>.xml.
-
-    Returns:
-        str: Path to the modified XML file.
+    values: dict avec z1,dz2,dz3,dz4
+    expr_map: dict constant_name -> template str avec {z1} etc.
     """
-    z1, dz2, dz3, dz4 = x
-
-    custom1 = {"B0TrackerLayer1_zstart": f"B0Tracker_length/2.0+{z1}"}
-    custom2 = {"B0TrackerLayer2_zstart": f"B0Tracker_length/2.0+{z1}+{dz2}"}
-    custom3 = {"B0TrackerLayer3_zstart": f"B0Tracker_length/2.0+{z1}+{dz2}+{dz3}"}
-    custom4 = {"B0TrackerLayer4_zstart": f"B0Tracker_length/2.0+{z1}+{dz2}+{dz3}+{dz4}"}
-
     tree = ET.parse(b0_xml_job)
     root = tree.getroot()
     found = set()
 
+    rendered = {name: tmpl.format(**values) for name, tmpl in expr_map.items()}
+
     for const in root.findall(".//constant"):
-        name = const.get("name")
-        if name in custom1:
-            const.set("value", custom1[name])
-            found.add(name)
-        if name in custom2:
-            const.set("value", custom2[name])
-            found.add(name)
-        if name in custom3:
-            const.set("value", custom3[name])
-            found.add(name)
-        if name in custom4:
-            const.set("value", custom4[name])
-            found.add(name)
+        cname = const.get("name")
+        if cname in rendered:
+            const.set("value", rendered[cname])
+            found.add(cname)
 
     tree.write(b0_xml_job, encoding="utf-8", xml_declaration=True)
 
-    print("EPIC FILE UPDATED")
+    missing = set(rendered) - found
+    if missing:
+        print(f"[WARN] constants not found in XML: {sorted(missing)}")
 
     return b0_xml_job
+
+# def editGeom(x, b0_xml_job):
+#     """
+#     Update z-start positions of B0 tracker layers in a job-specific XML file.
+
+#     Args:
+#         x (tuple): (z1, dz2, dz3, dz4) geometry offsets.
+#         b0_xml_job (str): Path to B0_tracker_<jobid>.xml.
+
+#     Returns:
+#         str: Path to the modified XML file.
+#     """
+#     z1, dz2, dz3, dz4 = x
+
+#     custom1 = {"B0TrackerLayer1_zstart": f"B0Tracker_length/2.0+{z1}"}
+#     custom2 = {"B0TrackerLayer2_zstart": f"B0Tracker_length/2.0+{z1}+{dz2}"}
+#     custom3 = {"B0TrackerLayer3_zstart": f"B0Tracker_length/2.0+{z1}+{dz2}+{dz3}"}
+#     custom4 = {"B0TrackerLayer4_zstart": f"B0Tracker_length/2.0+{z1}+{dz2}+{dz3}+{dz4}"}
+
+#     tree = ET.parse(b0_xml_job)
+#     root = tree.getroot()
+#     found = set()
+
+#     for const in root.findall(".//constant"):
+#         name = const.get("name")
+#         if name in custom1:
+#             const.set("value", custom1[name])
+#             found.add(name)
+#         if name in custom2:
+#             const.set("value", custom2[name])
+#             found.add(name)
+#         if name in custom3:
+#             const.set("value", custom3[name])
+#             found.add(name)
+#         if name in custom4:
+#             const.set("value", custom4[name])
+#             found.add(name)
+
+#     tree.write(b0_xml_job, encoding="utf-8", xml_declaration=True)
+
+#     print("EPIC FILE UPDATED")
+
+#     return b0_xml_job
 
 
 def editEPIC(epic_xml_job, default_old, default_new):
@@ -120,7 +144,44 @@ def create_dir(dir_name):
         os.makedirs(dir_name)
 
 
-def create_xml(x, jobid):
+# def create_xml(x, jobid):
+#     """
+#     Create and modify a job-specific B0 tracker XML file.
+
+#     Args:
+#         x (tuple): (z1, dz2, dz3, dz4) geometry offsets.
+#         jobid (str | int): Job identifier.
+
+#     Returns:
+#         str: Path to B0_tracker_<jobid>.xml.
+#     """
+#     b0_xml = Path(os.environ["EIC_SOFTWARE"]) / "share/epic/compact/far_forward/B0_tracker.xml"
+#     b0_xml_job = (
+#         Path(os.environ["AIDE_WORKDIR"])
+#         / "share/epic/compact/far_forward"
+#         / f"B0_tracker_{jobid}.xml"
+#     )
+#     b0_xml_job.parent.mkdir(parents=True, exist_ok=True)
+
+#     shutil.copyfile(b0_xml, b0_xml_job)
+
+#     # --- Debug: dump XML before/after geometry update ---
+#     print("===== CONTENT OF B0 TRACKER XML (BEFORE MODIF) =====")
+#     with open(b0_xml_job, "r") as f:
+#         print(f.read())
+#     print("=============================================================")
+
+#     editGeom(x, str(b0_xml_job))
+
+#     print("===== CONTENT OF B0 TRACKER XML (AFTER MODIF) =====")
+#     with open(b0_xml_job, "r") as f:
+#         print(f.read())
+#     print("=============================================================")
+
+#     return str(b0_xml_job)
+
+
+def create_xml(values: dict, jobid: str, cfg: dict):
     """
     Create and modify a job-specific B0 tracker XML file.
 
@@ -131,14 +192,15 @@ def create_xml(x, jobid):
     Returns:
         str: Path to B0_tracker_<jobid>.xml.
     """
-    b0_xml = Path(os.environ["EIC_SOFTWARE"]) / "share/epic/compact/far_forward/B0_tracker.xml"
+    b0_xml = Path(os.environ["EIC_SOFTWARE"]) / cfg["detector_parameters"]["b0_tracker"]["file_path"]
+
     b0_xml_job = (
         Path(os.environ["AIDE_WORKDIR"])
         / "share/epic/compact/far_forward"
         / f"B0_tracker_{jobid}.xml"
     )
-    b0_xml_job.parent.mkdir(parents=True, exist_ok=True)
 
+    b0_xml_job.parent.mkdir(parents=True, exist_ok=True)
     shutil.copyfile(b0_xml, b0_xml_job)
 
     # --- Debug: dump XML before/after geometry update ---
@@ -147,7 +209,8 @@ def create_xml(x, jobid):
         print(f.read())
     print("=============================================================")
 
-    editGeom(x, str(b0_xml_job))
+    expr_map = cfg["xml_expression_map"]["b0_tracker"]
+    editGeom(values, str(b0_xml_job), expr_map)
 
     print("===== CONTENT OF B0 TRACKER XML (AFTER MODIF) =====")
     with open(b0_xml_job, "r") as f:
