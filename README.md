@@ -32,7 +32,7 @@ pip install -e .[dev]
 cd B0_FarForward
 source setup.sh
 source setup_panda_bnl.sh
-python3 run.py 
+python3 b0_panda_run.py 
 ```
 
 ### Log files and PanDA status checking
