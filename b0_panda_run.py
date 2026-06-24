@@ -8,7 +8,10 @@ import yaml
 with open("b0_params.yml") as f:
     CFG = yaml.safe_load(f)
 
-# objective function
+# from objective import objective_function_toy
+
+def objective_function_toy(**parameterization):
+    return {"objective": 1.0}
 
 def objective_function(**parameterization):
 
